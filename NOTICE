@@ -1,0 +1,4 @@
+pi-anthropic-web-fetch
+
+This package targets the pi coding agent extension API by Mario Zechner and ports the senpi-mono builtin
+anthropic-web-fetch extension into a standalone pi extension package.
