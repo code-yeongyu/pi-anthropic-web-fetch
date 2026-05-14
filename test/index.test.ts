@@ -45,11 +45,7 @@ describe("anthropic-web-fetch builtin extension", () => {
 		);
 
 		expect(setStatus).toHaveBeenCalledWith("pi-anthropic-web-fetch", undefined);
-		expect(setWidget).toHaveBeenCalledWith(
-			"pi-anthropic-web-fetch",
-			["Native Web Fetch", "Anthropic · web_fetch_20260309 · max_uses provider default"],
-			{ placement: "belowEditor" },
-		);
+		expect(setWidget).toHaveBeenCalledWith("pi-anthropic-web-fetch", undefined);
 	});
 
 	it("is a no-op when model api is not anthropic-messages", () => {

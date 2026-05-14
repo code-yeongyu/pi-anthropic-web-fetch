@@ -115,14 +115,6 @@ export function isAnthropicWebFetchEnabled(): boolean {
 	return parseEnableEnv(ENABLE_ENV);
 }
 
-function widgetLines(): string[] {
-	const maxUses = parseMaxUses();
-	return [
-		"Native Web Fetch",
-		`Anthropic · ${NATIVE_WEB_FETCH_TYPE} · max_uses ${maxUses === undefined ? "provider default" : maxUses}`,
-	];
-}
-
 function clearUi(ctx: ExtensionContext): void {
 	if (!ctx.hasUI) return;
 	ctx.ui.setStatus(STATUS_KEY, undefined);
@@ -130,14 +122,7 @@ function clearUi(ctx: ExtensionContext): void {
 }
 
 function syncUi(ctx: ExtensionContext): void {
-	if (!ctx.hasUI) return;
-	if (ctx.model?.api !== "anthropic-messages" || !isAnthropicWebFetchEnabled()) {
-		clearUi(ctx);
-		return;
-	}
-
-	ctx.ui.setStatus(STATUS_KEY, undefined);
-	ctx.ui.setWidget(WIDGET_KEY, widgetLines(), { placement: "belowEditor" });
+	clearUi(ctx);
 }
 
 export const ANTHROPIC_WEB_FETCH_SECTION = `
