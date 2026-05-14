@@ -1,11 +1,13 @@
 import type { Api } from "@mariozechner/pi-ai";
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
 
 type ToolDefinition = Record<string, unknown>;
 
 const NATIVE_WEB_FETCH_TYPE = "web_fetch_20260309";
 const ENABLE_ENV = "PI_ANTHROPIC_WEB_FETCH";
 const MAX_USES_ENV = "PI_ANTHROPIC_WEB_FETCH_MAX_USES";
+const STATUS_KEY = "pi-anthropic-web-fetch";
+const WIDGET_KEY = "pi-anthropic-web-fetch";
 
 function parseEnableEnv(envVar: string): boolean {
 	const envValue = process.env[envVar];
@@ -113,6 +115,31 @@ export function isAnthropicWebFetchEnabled(): boolean {
 	return parseEnableEnv(ENABLE_ENV);
 }
 
+function widgetLines(): string[] {
+	const maxUses = parseMaxUses();
+	return [
+		"Native Web Fetch",
+		`Anthropic · ${NATIVE_WEB_FETCH_TYPE} · max_uses ${maxUses === undefined ? "provider default" : maxUses}`,
+	];
+}
+
+function clearUi(ctx: ExtensionContext): void {
+	if (!ctx.hasUI) return;
+	ctx.ui.setStatus(STATUS_KEY, undefined);
+	ctx.ui.setWidget(WIDGET_KEY, undefined);
+}
+
+function syncUi(ctx: ExtensionContext): void {
+	if (!ctx.hasUI) return;
+	if (ctx.model?.api !== "anthropic-messages" || !isAnthropicWebFetchEnabled()) {
+		clearUi(ctx);
+		return;
+	}
+
+	ctx.ui.setStatus(STATUS_KEY, "web_fetch native");
+	ctx.ui.setWidget(WIDGET_KEY, widgetLines(), { placement: "belowEditor" });
+}
+
 export const ANTHROPIC_WEB_FETCH_SECTION = `
 ## Web Fetch
 
@@ -123,6 +150,18 @@ Use web_fetch to retrieve content from a URL when needed.
 export default function anthropicWebFetchExtension(pi: ExtensionAPI): void {
 	pi.on("before_provider_request", (event, ctx) => {
 		return addAnthropicWebFetchToPayload(ctx.model?.api, event.payload);
+	});
+
+	pi.on("session_start", async (_event, ctx) => {
+		syncUi(ctx);
+	});
+
+	pi.on("model_select", async (_event, ctx) => {
+		syncUi(ctx);
+	});
+
+	pi.on("session_shutdown", async (_event, ctx) => {
+		clearUi(ctx);
 	});
 
 	pi.on("before_agent_start", async (event, ctx) => {

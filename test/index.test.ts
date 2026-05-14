@@ -1,9 +1,15 @@
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import anthropicWebFetchExtension, { addAnthropicWebFetchToPayload, isAnthropicWebFetchEnabled } from "../src/index.js";
 
 const ENABLE_ENV = "PI_ANTHROPIC_WEB_FETCH";
 const MAX_USES_ENV = "PI_ANTHROPIC_WEB_FETCH_MAX_USES";
+
+type TestUi = {
+	setStatus: (key: string, value: string | undefined) => void;
+	setWidget: (key: string, lines: string[] | undefined, options?: { placement: "belowEditor" }) => void;
+	theme: { fg: (key: string, value: string) => string };
+};
 
 afterEach(() => {
 	delete process.env[ENABLE_ENV];
@@ -11,6 +17,41 @@ afterEach(() => {
 });
 
 describe("anthropic-web-fetch builtin extension", () => {
+	it("shows native web fetch widget for Anthropic sessions", async () => {
+		type SessionStartHandler = (
+			event: object,
+			ctx: { model?: { api?: string }; hasUI?: boolean; ui: TestUi },
+		) => Promise<void> | void;
+
+		let sessionStartHandler: SessionStartHandler | undefined;
+		const setStatus = vi.fn();
+		const setWidget = vi.fn();
+		const pi = {
+			on(eventName: string, handler: unknown) {
+				if (eventName === "session_start") {
+					sessionStartHandler = handler as SessionStartHandler;
+				}
+			},
+		} satisfies Pick<ExtensionAPI, "on">;
+
+		anthropicWebFetchExtension(pi as ExtensionAPI);
+		await sessionStartHandler?.(
+			{},
+			{
+				model: { api: "anthropic-messages" },
+				hasUI: true,
+				ui: { setStatus, setWidget, theme: { fg: (_key: string, value: string) => value } },
+			},
+		);
+
+		expect(setStatus).toHaveBeenCalledWith("pi-anthropic-web-fetch", "web_fetch native");
+		expect(setWidget).toHaveBeenCalledWith(
+			"pi-anthropic-web-fetch",
+			["Native Web Fetch", "Anthropic · web_fetch_20260309 · max_uses provider default"],
+			{ placement: "belowEditor" },
+		);
+	});
+
 	it("is a no-op when model api is not anthropic-messages", () => {
 		const payload = {
 			tools: [{ name: "webfetch", description: "function tool" }],
