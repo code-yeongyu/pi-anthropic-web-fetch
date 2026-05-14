@@ -136,7 +136,7 @@ function syncUi(ctx: ExtensionContext): void {
 		return;
 	}
 
-	ctx.ui.setStatus(STATUS_KEY, "web_fetch native");
+	ctx.ui.setStatus(STATUS_KEY, undefined);
 	ctx.ui.setWidget(WIDGET_KEY, widgetLines(), { placement: "belowEditor" });
 }
 

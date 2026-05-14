@@ -44,7 +44,7 @@ describe("anthropic-web-fetch builtin extension", () => {
 			},
 		);
 
-		expect(setStatus).toHaveBeenCalledWith("pi-anthropic-web-fetch", "web_fetch native");
+		expect(setStatus).toHaveBeenCalledWith("pi-anthropic-web-fetch", undefined);
 		expect(setWidget).toHaveBeenCalledWith(
 			"pi-anthropic-web-fetch",
 			["Native Web Fetch", "Anthropic · web_fetch_20260309 · max_uses provider default"],
