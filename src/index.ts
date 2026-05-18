@@ -57,8 +57,8 @@ function sanitizeTools(tools: unknown[]): ToolDefinition[] {
 			continue;
 		}
 
-		const name = tool.name;
-		const type = tool.type;
+		const name = tool["name"];
+		const type = tool["type"];
 		const stripLegacyWebfetch = name === "webfetch" && !isWebFetchType(type);
 		const stripUnderscoreFunction = name === "web_fetch" && !isWebFetchType(type);
 		if (!stripLegacyWebfetch && !stripUnderscoreFunction) {
@@ -98,9 +98,9 @@ export function addAnthropicWebFetchToPayload(api: Api | undefined, payload: unk
 		return payload;
 	}
 
-	const tools = Array.isArray(payload.tools) ? payload.tools : [];
+	const tools = Array.isArray(payload["tools"]) ? payload["tools"] : [];
 	const sanitizedTools = sanitizeTools(tools);
-	const hasNativeWebFetch = sanitizedTools.some((tool) => isWebFetchType(tool.type));
+	const hasNativeWebFetch = sanitizedTools.some((tool) => isWebFetchType(tool["type"]));
 	if (!hasNativeWebFetch) {
 		sanitizedTools.push(createNativeWebFetchTool());
 	}

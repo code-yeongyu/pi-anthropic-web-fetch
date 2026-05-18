@@ -83,7 +83,7 @@ describe("anthropic-web-fetch builtin extension", () => {
 			tools: Array<Record<string, unknown>>;
 		};
 
-		const webFetchTools = result.tools.filter((tool) => tool.name === "web_fetch");
+		const webFetchTools = result.tools.filter((tool) => tool["name"] === "web_fetch");
 		expect(webFetchTools).toHaveLength(1);
 		expect(webFetchTools[0]).toEqual({ type: "web_fetch_20250910", name: "web_fetch" });
 	});
@@ -97,8 +97,8 @@ describe("anthropic-web-fetch builtin extension", () => {
 			tools: Array<Record<string, unknown>>;
 		};
 
-		const webFetchFunctionTools = result.tools.filter((tool) => tool.name === "webfetch");
-		const webFetchNativeTools = result.tools.filter((tool) => tool.name === "web_fetch");
+		const webFetchFunctionTools = result.tools.filter((tool) => tool["name"] === "webfetch");
+		const webFetchNativeTools = result.tools.filter((tool) => tool["name"] === "web_fetch");
 
 		expect(webFetchFunctionTools).toHaveLength(0);
 		expect(webFetchNativeTools).toHaveLength(1);
@@ -114,7 +114,7 @@ describe("anthropic-web-fetch builtin extension", () => {
 			tools: Array<Record<string, unknown>>;
 		};
 
-		const webFetchTools = result.tools.filter((tool) => tool.name === "web_fetch");
+		const webFetchTools = result.tools.filter((tool) => tool["name"] === "web_fetch");
 		expect(webFetchTools).toHaveLength(1);
 		expect(webFetchTools[0]).toEqual({ type: "web_fetch_20260309", name: "web_fetch" });
 	});
@@ -134,7 +134,7 @@ describe("anthropic-web-fetch builtin extension", () => {
 		const resultWithoutEnv = addAnthropicWebFetchToPayload("anthropic-messages", payloadWithoutEnv) as {
 			tools: Array<Record<string, unknown>>;
 		};
-		const withoutEnvTool = resultWithoutEnv.tools.find((tool) => tool.name === "web_fetch");
+		const withoutEnvTool = resultWithoutEnv.tools.find((tool) => tool["name"] === "web_fetch");
 
 		expect(withoutEnvTool).toEqual({ type: "web_fetch_20260309", name: "web_fetch" });
 		expect(withoutEnvTool).not.toHaveProperty("max_uses");
@@ -144,7 +144,7 @@ describe("anthropic-web-fetch builtin extension", () => {
 		const resultWithEnv = addAnthropicWebFetchToPayload("anthropic-messages", payloadWithEnv) as {
 			tools: Array<Record<string, unknown>>;
 		};
-		const withEnvTool = resultWithEnv.tools.find((tool) => tool.name === "web_fetch");
+		const withEnvTool = resultWithEnv.tools.find((tool) => tool["name"] === "web_fetch");
 
 		expect(withEnvTool).toEqual({ type: "web_fetch_20260309", name: "web_fetch", max_uses: 20 });
 	});
@@ -168,7 +168,7 @@ describe("anthropic-web-fetch builtin extension", () => {
 		const result = addAnthropicWebFetchToPayload("anthropic-messages", payload) as {
 			tools: Array<Record<string, unknown>>;
 		};
-		const webFetchTool = result.tools.find((tool) => tool.name === "web_fetch");
+		const webFetchTool = result.tools.find((tool) => tool["name"] === "web_fetch");
 
 		expect(webFetchTool).toEqual({ type: "web_fetch_20260309", name: "web_fetch" });
 	});
