@@ -26,10 +26,7 @@ It also appends a system-prompt section for Anthropic sessions indicating native
 The package targets the [`pi`](https://github.com/badlogic/pi-mono/tree/main/packages/coding-agent) coding agent. Pi loads extensions from `~/.pi/agent/extensions/`, project `.pi/extensions/`, or via the `--extension` / `-e` CLI flag.
 
 ```bash
-# From npm (once published)
-pi install npm:pi-anthropic-web-fetch
-
-# From git
+# From git (primary distribution method)
 pi install git:github.com/code-yeongyu/pi-anthropic-web-fetch
 
 # Manual placement
@@ -45,10 +42,10 @@ After installation, restart pi or run `/reload` inside an interactive session.
 ## Development
 
 ```bash
-npm install
-npm test
-npm run typecheck
-npm run check
+bun install
+bun run test
+bun run typecheck
+bun run check
 pi -e ./src/index.ts
 ```
 

@@ -1,4 +1,4 @@
-import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import anthropicWebFetchExtension, { addAnthropicWebFetchToPayload, isAnthropicWebFetchEnabled } from "../src/index.js";
 
@@ -31,6 +31,7 @@ describe("anthropic-web-fetch builtin extension", () => {
 				if (eventName === "session_start") {
 					sessionStartHandler = handler as SessionStartHandler;
 				}
+				return () => {};
 			},
 		} satisfies Pick<ExtensionAPI, "on">;
 
@@ -210,6 +211,7 @@ describe("anthropic-web-fetch before_agent_start", () => {
 				if (eventName === "before_agent_start") {
 					beforeAgentStartHandler = handler as BeforeAgentStartHandler;
 				}
+				return () => {};
 			},
 		} satisfies Pick<ExtensionAPI, "on">;
 
